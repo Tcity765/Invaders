@@ -12,6 +12,7 @@ import engine.DrawManager.SpriteType;
  * 
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  * 
+ * 占시뤄옙占싱억옙 占쏙옙 占쏙옙占쏙옙占� 占싸븝옙
  */
 public class Ship extends Entity {
 
@@ -26,6 +27,7 @@ public class Ship extends Entity {
 	private Cooldown shootingCooldown;
 	/** Time spent inactive between hits. */
 	private Cooldown destructionCooldown;
+
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -68,6 +70,7 @@ public class Ship extends Entity {
 	 */
 	public final boolean shoot(final Set<Bullet> bullets) {
 		if (this.shootingCooldown.checkFinished()) {
+			
 			this.shootingCooldown.reset();
 			bullets.add(BulletPool.getBullet(positionX + this.width / 2,
 					positionY, BULLET_SPEED));
@@ -101,7 +104,6 @@ public class Ship extends Entity {
 	public final boolean isDestroyed() {
 		return !this.destructionCooldown.checkFinished();
 	}
-
 	/**
 	 * Getter for the ship's speed.
 	 * 

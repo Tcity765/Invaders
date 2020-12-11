@@ -30,6 +30,7 @@ public class EnemyShip extends Entity {
 	/** Values of the ship, in points, when destroyed. */
 	private int pointValue;
 
+
 	/**
 	 * Constructor, establishes the ship's properties.
 	 * 

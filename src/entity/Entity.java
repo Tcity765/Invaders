@@ -9,6 +9,7 @@ import engine.DrawManager.SpriteType;
  * 
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  * 
+ * 위치, 색깔 조정
  */
 public class Entity {
 
