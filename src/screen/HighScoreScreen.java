@@ -32,6 +32,7 @@ public class HighScoreScreen extends Screen {
 		super(width, height, fps);
 
 		this.returnCode = 1;
+		
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();
@@ -50,18 +51,20 @@ public class HighScoreScreen extends Screen {
 
 		return this.returnCode;
 	}
-
+	
 	/**
-	 * Updates the elements on screen and checks for events.
-	 */
-	protected final void update() {
-		super.update();
+     * Updates the elements on screen and checks for events.
+     */
+    protected final void update() {
+        super.update();
+        draw();
+        if (this.inputDelay.checkFinished()) {
+            if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 
-		draw();
-		if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
-				&& this.inputDelay.checkFinished())
-			this.isRunning = false;
-	}
+                this.isRunning = false;
+            }
+        }
+    }
 
 	/**
 	 * Draws the elements associated with the screen.
@@ -70,6 +73,7 @@ public class HighScoreScreen extends Screen {
 		drawManager.initDrawing(this);
 
 		drawManager.drawHighScoreMenu(this);
+
 		drawManager.drawHighScores(this, this.highScores);
 
 		drawManager.completeDrawing(this);

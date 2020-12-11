@@ -36,6 +36,7 @@ public class TitleScreen extends Screen {
 		this.returnCode = 2;
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
+
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class TitleScreen extends Screen {
 	 */
 	public final int run() {
 		super.run();
-
+		
 		return this.returnCode;
 	}
 
@@ -69,7 +70,10 @@ public class TitleScreen extends Screen {
 				this.selectionCooldown.reset();
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_SPACE))
+			{
+
 				this.isRunning = false;
+			}
 		}
 	}
 
