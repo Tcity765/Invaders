@@ -36,7 +36,7 @@ public final class FileManager {
 	/** Application logger. */
 	private static Logger logger;
 	/** Max number of high scores. */
-	private static final int MAX_SCORES = 7;
+	private static final int MAX_SCORES = 10; // FOR 2PLAYER ???? 7
 
 	/**
 	 * private constructor.
@@ -147,15 +147,17 @@ public final class FileManager {
 			reader = new BufferedReader(new InputStreamReader(inputStream));
 
 			Score highScore = null;
-			String name = reader.readLine();
 			String score = reader.readLine();
 
-			while ((name != null) && (score != null)) {
-				highScore = new Score(name, Integer.parseInt(score));
+			while (score != null) {
+				String[] split = score.split("@");
+				highScore = new Score(split[0], Integer.parseInt(split[1]));
 				highScores.add(highScore);
-				name = reader.readLine();
+
 				score = reader.readLine();
 			}
+		} catch (Exception e) {
+			logger.warning(""+e);
 		} finally {
 			if (inputStream != null)
 				inputStream.close();
@@ -171,9 +173,10 @@ public final class FileManager {
 	 * @return Sorted list of scores - players.
 	 * @throws IOException
 	 *             In case of loading problems.
+	 * 
 	 */
 	public List<Score> loadHighScores() throws IOException {
-
+		
 		List<Score> highScores = new ArrayList<Score>();
 		InputStream inputStream = null;
 		BufferedReader bufferedReader = null;
@@ -185,7 +188,7 @@ public final class FileManager {
 
 			String scoresPath = new File(jarPath).getParent();
 			scoresPath += File.separator;
-			scoresPath += "scores";
+			scoresPath += "src/scores";
 
 			File scoresFile = new File(scoresPath);
 			inputStream = new FileInputStream(scoresFile);
@@ -194,15 +197,14 @@ public final class FileManager {
 
 			logger.info("Loading user high scores.");
 
-			Score highScore = null;
-			String name = bufferedReader.readLine();
-			String score = bufferedReader.readLine();
+			Score Player1Score = null;
+			String player1 = bufferedReader.readLine();
 
-			while ((name != null) && (score != null)) {
-				highScore = new Score(name, Integer.parseInt(score));
-				highScores.add(highScore);
-				name = bufferedReader.readLine();
-				score = bufferedReader.readLine();
+			while ((player1 != null)) {
+				String[] split = player1.split("@");
+				Player1Score = new Score(split[0], Integer.parseInt(split[1]));
+				highScores.add(Player1Score);
+				player1 = bufferedReader.readLine();
 			}
 
 		} catch (FileNotFoundException e) {
@@ -238,12 +240,15 @@ public final class FileManager {
 
 			String scoresPath = new File(jarPath).getParent();
 			scoresPath += File.separator;
-			scoresPath += "scores";
-
+			scoresPath += "src/scores";
+			logger.info(scoresPath);
 			File scoresFile = new File(scoresPath);
 
 			if (!scoresFile.exists())
+			{
+				logger.info("Save File Creating...");
 				scoresFile.createNewFile();
+			}
 
 			outputStream = new FileOutputStream(scoresFile);
 			bufferedWriter = new BufferedWriter(new OutputStreamWriter(
@@ -254,11 +259,9 @@ public final class FileManager {
 			// Saves 7 or less scores.
 			int savedCount = 0;
 			for (Score score : highScores) {
-				if (savedCount >= MAX_SCORES)
+				if (savedCount > MAX_SCORES)
 					break;
-				bufferedWriter.write(score.getName());
-				bufferedWriter.newLine();
-				bufferedWriter.write(Integer.toString(score.getScore()));
+				bufferedWriter.write(score.getName()+"@"+Integer.toString(score.getScore()));
 				bufferedWriter.newLine();
 				savedCount++;
 			}
@@ -268,4 +271,6 @@ public final class FileManager {
 				bufferedWriter.close();
 		}
 	}
+	
 }
+

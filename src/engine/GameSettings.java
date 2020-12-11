@@ -4,8 +4,11 @@ package engine;
  * Implements an object that stores a single game's difficulty settings.
  * 
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
- * 
+ *
+ * 게임 난이도 관련 코드. 여기서 몹 속도, 위치, 발사 속도 조절
  */
+
+
 public class GameSettings {
 
 	/** Width of the level's enemy formation. */

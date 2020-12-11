@@ -8,7 +8,8 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import screen.GameScreen;
+// import screen.GameScreen;
+import screen.GameScreen_2;
 import screen.HighScoreScreen;
 import screen.ScoreScreen;
 import screen.Screen;
@@ -35,7 +36,8 @@ public final class Core {
 	private static final int EXTRA_LIFE_FRECUENCY = 3;
 	/** Total number of levels. */
 	private static final int NUM_LEVELS = 7;
-	
+
+	// GameSettings
 	/** Difficulty settings for level 1. */
 	private static final GameSettings SETTINGS_LEVEL_1 =
 			new GameSettings(5, 4, 60, 2000);
@@ -62,7 +64,7 @@ public final class Core {
 	private static Frame frame;
 	/** Screen currently shown. */
 	private static Screen currentScreen;
-	/** Difficulty settings list. */
+	/** Current Difficulty settings list. */
 	private static List<GameSettings> gameSettings;
 	/** Application logger. */
 	private static final Logger LOGGER = Logger.getLogger(Core.class
@@ -103,6 +105,9 @@ public final class Core {
 		int width = frame.getWidth();
 		int height = frame.getHeight();
 
+
+
+		// Init GameSettings.
 		gameSettings = new ArrayList<GameSettings>();
 		gameSettings.add(SETTINGS_LEVEL_1);
 		gameSettings.add(SETTINGS_LEVEL_2);
@@ -111,12 +116,14 @@ public final class Core {
 		gameSettings.add(SETTINGS_LEVEL_5);
 		gameSettings.add(SETTINGS_LEVEL_6);
 		gameSettings.add(SETTINGS_LEVEL_7);
+
+
 		
-		GameState gameState;
+		GameState2 gameState;
 
 		int returnCode = 1;
 		do {
-			gameState = new GameState(1, 0, MAX_LIVES, 0, 0);
+			gameState = new GameState2(1, 0,0,MAX_LIVES, MAX_LIVES,0, 0, 0, 0, false,false);
 
 			switch (returnCode) {
 			case 1:
@@ -131,11 +138,10 @@ public final class Core {
 				// Game & score.
 				do {
 					// One extra live every few levels.
-					boolean bonusLife = gameState.getLevel()
-							% EXTRA_LIFE_FRECUENCY == 0
-							&& gameState.getLivesRemaining() < MAX_LIVES;
+					boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0 
+					&& ((gameState.getLivesRemaining1() < MAX_LIVES || gameState.getLivesRemaining1() <=0) || (gameState.getLivesRemaing2() < MAX_LIVES || gameState.getLivesRemaing2()<=0));
 					
-					currentScreen = new GameScreen(gameState,
+					currentScreen = new GameScreen_2(gameState,
 							gameSettings.get(gameState.getLevel() - 1),
 							bonusLife, width, height, FPS);
 					LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
@@ -143,23 +149,29 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
-					gameState = ((GameScreen) currentScreen).getGameState();
+					gameState = ((GameScreen_2) currentScreen).getGameState();
 
-					gameState = new GameState(gameState.getLevel() + 1,
-							gameState.getScore(),
-							gameState.getLivesRemaining(),
-							gameState.getBulletsShot(),
-							gameState.getShipsDestroyed());
+					gameState = new GameState2(gameState.getLevel() + 1,
+							gameState.getScore1(),
+							gameState.getScore2(),
+							gameState.getLivesRemaining1(),
+							gameState.getLivesRemaing2(),
+							gameState.getBulletsShot1(),
+							gameState.getBulletsShot2(),
+							gameState.getShipsDestroyed1(),
+							gameState.getShipsDestroyed2(),
+							gameState.getShipEnd1(),
+							gameState.getShipEnd2());
 
-				} while (gameState.getLivesRemaining() > 0
+				} while ((gameState.getLivesRemaining1() > 0 || gameState.getLivesRemaing2()>0)
 						&& gameState.getLevel() <= NUM_LEVELS);
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "
-						+ gameState.getScore() + ", "
-						+ gameState.getLivesRemaining() + " lives remaining, "
-						+ gameState.getBulletsShot() + " bullets shot and "
-						+ gameState.getShipsDestroyed() + " ships destroyed.");
+						+ gameState.getScore1() + ", "
+						+ gameState.getLivesRemaining1() + " lives remaining, "
+						+ gameState.getBulletsShot1() + " bullets shot and "
+						+ gameState.getShipsDestroyed1() + " ships destroyed.");
 				currentScreen = new ScoreScreen(width, height, FPS, gameState);
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing score screen.");
@@ -225,6 +237,7 @@ public final class Core {
 	public static FileManager getFileManager() {
 		return FileManager.getInstance();
 	}
+	
 
 	/**
 	 * Controls creation of new cooldowns.
